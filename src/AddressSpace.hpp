@@ -35,7 +35,7 @@ namespace libunwind {
 #include "Registers.hpp"
 
 #if _LIBUNWIND_ARM_EHABI
-#if defined(__FreeBSD__) || defined(__NetBSD__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 
 typedef void *_Unwind_Ptr;
 
@@ -373,7 +373,7 @@ inline bool LocalAddressSpace::findUnwindSections(pint_t targetAddr,
       (_Unwind_Ptr) targetAddr, &length);
   info.arm_section_length = (uintptr_t)length;
  #endif
-  _LIBUNWIND_TRACE_UNWINDING("findUnwindSections: section %X length %x\n",
+  _LIBUNWIND_TRACE_UNWINDING("findUnwindSections: section %X length %x",
                              info.arm_section, info.arm_section_length);
   if (info.arm_section && info.arm_section_length)
     return true;
