@@ -87,7 +87,7 @@
   } while (0)
 
 #define _LIBUNWIND_LOG(msg, ...)                                               \
-  fprintf(stderr, "libunwind: " msg "\n", ##__VA_ARGS__)
+  fprintf(stderr, "libunwind: " msg "\n", __VA_ARGS__)
 
 #if defined(_LIBUNWIND_HAS_NO_THREADS)
   // only used with pthread calls, not needed for the single-threaded builds
@@ -110,13 +110,16 @@
   #define _LIBUNWIND_DEBUG_LOG(msg, ...)
   #define _LIBUNWIND_TRACE_API(msg, ...)
   #define _LIBUNWIND_TRACING_UNWINDING (0)
+  #define _LIBUNWIND_TRACING_DWARF (0)
   #define _LIBUNWIND_TRACE_UNWINDING(msg, ...)
+  #define _LIBUNWIND_TRACE_DWARF(...)
 #else
   #ifdef __cplusplus
     extern "C" {
   #endif
     extern  bool logAPIs();
     extern  bool logUnwinding();
+    extern  bool logDWARF();
   #ifdef __cplusplus
     }
   #endif
@@ -127,10 +130,16 @@
         _LIBUNWIND_LOG(msg, __VA_ARGS__);                                      \
     } while (0)
   #define _LIBUNWIND_TRACING_UNWINDING logUnwinding()
+  #define _LIBUNWIND_TRACING_DWARF logDWARF()
   #define _LIBUNWIND_TRACE_UNWINDING(msg, ...)                                 \
     do {                                                                       \
       if (logUnwinding())                                                      \
         _LIBUNWIND_LOG(msg, __VA_ARGS__);                                      \
+    } while (0)
+  #define _LIBUNWIND_TRACE_DWARF(...)                                          \
+    do {                                                                       \
+      if (logDWARF())                                                          \
+        fprintf(stderr, __VA_ARGS__);                                          \
     } while (0)
 #endif
 
