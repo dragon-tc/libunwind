@@ -211,6 +211,10 @@ add_target_flags_if(LIBUNWIND_GCC_TOOLCHAIN
 add_target_flags_if(LIBUNWIND_SYSROOT
           "--sysroot=${LIBUNWIND_SYSROOT}")
 
+if (LIBUNWIND_TARGET_TRIPLE)
+  set(TARGET_TRIPLE "${LIBUNWIND_TARGET_TRIPLE}")
+endif()
+
 # Configure compiler.
 include(config-ix)
 
@@ -306,6 +310,11 @@ endif()
 # This is the _ONLY_ place where add_definitions is called.
 if (MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
+# Disable DLL annotations on Windows for static builds.
+if (WIN32 AND LIBUNWIND_ENABLE_STATIC AND NOT LIBUNWIND_ENABLE_SHARED)
+  add_definitions(-D_LIBUNWIND_DISABLE_VISIBILITY_ANNOTATIONS)
 endif()
 
 #===============================================================================
